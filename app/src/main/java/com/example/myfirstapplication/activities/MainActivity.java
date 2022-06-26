@@ -1,9 +1,11 @@
-package com.example.myfirstapplication;
+package com.example.myfirstapplication.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.example.myfirstapplication.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,9 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        Toast.makeText(this, "Moamen", Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Moamen", Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Moamen", Toast.LENGTH_SHORT).show();
+
 
 
 

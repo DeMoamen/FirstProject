@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MyFirstApplication</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_to_continue">login_to_continue</string>
+    <string name="email">Email</string>
+    <string name="password">password</string>
+    <string name="create_new_account">create_new_account</string>
+    <string name="add_image">Add Image</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="sign_up">sign up</string>
+    <string name="sign_in">sign in</string>
 </resources>
