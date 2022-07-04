@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 public class SignUp extends AppCompatActivity {
-    private ActivitySignUpBinding binding ;
+    private ActivitySignUpBinding binding;
     private PreferenceManager preferenceManager;
     private String encodedImage;
 
@@ -42,53 +42,53 @@ public class SignUp extends AppCompatActivity {
     }
 
 
-    private void setListener(){
-        binding.createNewAccountUp.setOnClickListener(v->onBackPressed());
-     binding.signUp.setOnClickListener(v->{
-         if(isValidSignUpDetails()){
-             signUp();
-         }
+    private void setListener() {
+        binding.createNewAccountUp.setOnClickListener(v -> onBackPressed());
+        binding.signUp.setOnClickListener(v -> {
+            if (isValidSignUpDetails()) {
+                signUp();
+            }
 
 
-     });
-      binding.layoutImage.setOnClickListener(view -> {
+        });
+        binding.layoutImage.setOnClickListener(view -> {
 
-          Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-          intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-          pickImage.launch(intent);
-
-
-      });
-
-    }
-
-    private void showToast(String message){
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            pickImage.launch(intent);
 
 
-        Toast.makeText(this,message , Toast.LENGTH_SHORT).show();
+        });
 
     }
 
+    private void showToast(String message) {
 
-    private  void signUp(){
+
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    private void signUp() {
 
         loading(true);
-        FirebaseFirestore database= FirebaseFirestore.getInstance();
-        HashMap<String,Object> user = new HashMap<>();
-        user.put(Constants.KEY_NAME,binding.inputName.getText().toString());
-        user.put(Constants.KEY_EMAIL,binding.inputEmail.getText().toString());
-        user.put(Constants.KEY_PASSWORD,binding.inputPasswordUp.getText().toString());
-        user.put(Constants.KEY_IMAGE,encodedImage);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        HashMap<String, Object> user = new HashMap<>();
+        user.put(Constants.KEY_NAME, binding.inputName.getText().toString());
+        user.put(Constants.KEY_EMAIL, binding.inputEmail.getText().toString());
+        user.put(Constants.KEY_PASSWORD, binding.inputPasswordUp.getText().toString());
+        user.put(Constants.KEY_IMAGE, encodedImage);
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
                 .addOnSuccessListener(documentReference -> {
                     loading(false);
-                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN,true);
-                    preferenceManager.putString(Constants.KEY_USER_ID,documentReference.getId());
-                    preferenceManager.putString(Constants.KEY_NAME,binding.inputName.getText().toString());
-                    preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                    preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
+                    preferenceManager.putString(Constants.KEY_NAME, binding.inputName.getText().toString());
+                    preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
 
 
@@ -101,17 +101,16 @@ public class SignUp extends AppCompatActivity {
                 });
 
 
-
     }
 
-    private String encodedImage(Bitmap bitmap){
-        int previewWidth= 150;
-        int previewHeight= bitmap.getHeight()*previewWidth/bitmap.getWidth();
-        Bitmap previewBitmap =Bitmap.createScaledBitmap(bitmap,previewWidth,previewHeight,false);
+    private String encodedImage(Bitmap bitmap) {
+        int previewWidth = 150;
+        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        previewBitmap.compress(Bitmap.CompressFormat.JPEG,50,byteArrayOutputStream);
-        byte[] bytes= byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(bytes,Base64.DEFAULT);
+        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
 
 
     }
@@ -121,93 +120,82 @@ public class SignUp extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
 
-                if (result.getResultCode() == RESULT_OK){
-                       if (result.getData() != null){
+                if (result.getResultCode() == RESULT_OK) {
+                    if (result.getData() != null) {
 
-                           Uri imageUri = result.getData().getData();
-                           try {
-                               InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                               Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                               binding.imageProfile.setImageBitmap(bitmap);
-                               binding.textAddImage.setVisibility(View.GONE);
-                               encodedImage =encodedImage(bitmap);
-                           }catch (FileNotFoundException e){
+                        Uri imageUri = result.getData().getData();
+                        try {
+                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            binding.imageProfile.setImageBitmap(bitmap);
+                            binding.textAddImage.setVisibility(View.GONE);
+                            encodedImage = encodedImage(bitmap);
+                        } catch (FileNotFoundException e) {
 
-                               e.printStackTrace();
-                           }
+                            e.printStackTrace();
+                        }
 
-                       }
+                    }
 
 
                 }
             }
 
 
-
-            );
-
+    );
 
 
-
-
-
-
-
-    private boolean isValidSignUpDetails(){
-        if (encodedImage==null){
+    private boolean isValidSignUpDetails() {
+        if (encodedImage == null) {
             showToast("Select profile Image ");
             return false;
-        }else if(binding.inputName.getText().toString().trim().isEmpty()){
+        } else if (binding.inputName.getText().toString().trim().isEmpty()) {
             showToast("Enter Name");
-   return false;
+            return false;
 
-        }else if (binding.inputEmail.getText().toString().trim().isEmpty()){
+        } else if (binding.inputEmail.getText().toString().trim().isEmpty()) {
             showToast("Enter Email");
-            return false ;
+            return false;
 
-        }else if (!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()){
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()) {
             showToast("Enter Valid Email");
 
-            return false ;
+            return false;
 
-        }else if (binding.inputPasswordUp.getText().toString().trim().isEmpty()){
+        } else if (binding.inputPasswordUp.getText().toString().trim().isEmpty()) {
 
             showToast("Enter password ");
-            return  false;
-        }else if (binding.inputConfirmPassword.getText().toString().trim().isEmpty()){
+            return false;
+        } else if (binding.inputConfirmPassword.getText().toString().trim().isEmpty()) {
             showToast("Enter Confirm password ");
-            return  false;
+            return false;
 
-        }else if (!binding.inputPasswordUp.getText().toString().equals(binding.inputConfirmPassword.getText().toString())){
+        } else if (!binding.inputPasswordUp.getText().toString().equals(binding.inputConfirmPassword.getText().toString())) {
             showToast("password && Confirm password must be same ");
-            return  false;
-        }else {
+            return false;
+        } else {
 
 
             return true;
         }
 
 
-
     }
 
-private  void loading(Boolean isLoading){
+    private void loading(Boolean isLoading) {
 
-        if (isLoading){
+        if (isLoading) {
             binding.signUp.setVisibility(View.INVISIBLE);
             binding.progressBarSignUp.setVisibility(View.VISIBLE);
 
 
-        }else {
+        } else {
 
             binding.signUp.setVisibility(View.VISIBLE);
             binding.progressBarSignUp.setVisibility(View.INVISIBLE);
         }
 
-}
-
-
-
+    }
 
 
 }

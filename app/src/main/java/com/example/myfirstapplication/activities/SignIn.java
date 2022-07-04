@@ -25,15 +25,16 @@ import java.util.Map;
 
 public class SignIn extends AppCompatActivity {
 
-    private ActivitySignInBinding binding ;
+    private ActivitySignInBinding binding;
     private PreferenceManager preferenceManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(getApplicationContext());
-        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)){
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -43,42 +44,42 @@ public class SignIn extends AppCompatActivity {
 
     }
 
-    private void  setListeners(){
+    private void setListeners() {
 
-        binding.createNewAccount.setOnClickListener(v->
-               startActivity(new Intent(getApplicationContext(),SignUp.class) ));
+        binding.createNewAccount.setOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(), SignUp.class)));
 
 
-binding.signIn.setOnClickListener(view -> {
-    if (isValidSignInDetails()){
+        binding.signIn.setOnClickListener(view -> {
+            if (isValidSignInDetails()) {
 
-        signIn();
+                signIn();
+            }
+
+        });
+
     }
 
-});
-
-    }
-
-private  void signIn(){
+    private void signIn() {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
-                .whereEqualTo(Constants.KEY_EMAIL,binding.inputEmail.getText().toString())
-                .whereEqualTo(Constants.KEY_PASSWORD,binding.inputPassword.getText().toString())
+                .whereEqualTo(Constants.KEY_EMAIL, binding.inputEmail.getText().toString())
+                .whereEqualTo(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString())
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                        preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
-                        preferenceManager.putString(Constants.KEY_NAME,documentSnapshot.getString(Constants.KEY_NAME));
-                        preferenceManager.putString(Constants.KEY_IMAGE,documentSnapshot.getString(Constants.KEY_IMAGE));
+                        preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
+                        preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
+                        preferenceManager.putString(Constants.KEY_IMAGE, documentSnapshot.getString(Constants.KEY_IMAGE));
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                           startActivity(intent);
+                        startActivity(intent);
 
 
-                    }else {
+                    } else {
                         loading(false);
                         showToast("Unable To  Sign In ");
 
@@ -88,33 +89,31 @@ private  void signIn(){
                 });
 
 
+    }
 
 
-}
-
-
-    private  void  showToast(String message){
+    private void showToast(String message) {
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
     }
 
 
-    private Boolean isValidSignInDetails(){
-        if (binding.inputEmail.getText().toString().trim().isEmpty()){
+    private Boolean isValidSignInDetails() {
+        if (binding.inputEmail.getText().toString().trim().isEmpty()) {
             showToast("Enter Email");
-         return false;
-        }else if (!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()){
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()) {
 
             showToast("Enter Valid Email");
             return false;
 
-        }else if(binding.inputPassword.getText().toString().trim().isEmpty()){
+        } else if (binding.inputPassword.getText().toString().trim().isEmpty()) {
 
             showToast("Enter password ");
-            return false ;
+            return false;
 
-        }else {
+        } else {
 
             return true;
 
@@ -123,21 +122,20 @@ private  void signIn(){
 
     }
 
-    private  void loading(Boolean isLoading){
+    private void loading(Boolean isLoading) {
 
-        if (isLoading){
+        if (isLoading) {
             binding.signIn.setVisibility(View.INVISIBLE);
             binding.progressBarrSignIn.setVisibility(View.VISIBLE);
 
 
-        }else {
+        } else {
 
             binding.signIn.setVisibility(View.VISIBLE);
             binding.progressBarrSignIn.setVisibility(View.INVISIBLE);
         }
 
     }
-
 
 
 }
