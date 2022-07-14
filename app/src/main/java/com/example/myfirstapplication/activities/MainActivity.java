@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 
-public class MainActivity extends AppCompatActivity implements ConversionListener {
+public class MainActivity extends BaseActivity implements ConversionListener {
     private ActivityMainBinding binding;
     private PreferenceManager preferenceManager;
     private List<ChatMessage> conversions;

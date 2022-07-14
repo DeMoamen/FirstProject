@@ -12,4 +12,5 @@
     <string name="sign_in">sign in</string>
     <string name="select_user">Select_User</string>
     <string name="type_a_message">type_a_message</string>
+    <string name="online">online</string>
 </resources>
